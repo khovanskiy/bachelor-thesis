@@ -1,0 +1,18 @@
+# train 		= 3bafda
+# local train 	= 48cfad
+# bus 			= ea89bf
+# taxi			= f6bb42
+# plane			= fc6e51
+digraph example {
+	rankdir = LR;
+	A;
+	B;
+	C;
+	D;
+	E;
+	A -> B [label="Автобус", color="#ea89bf"];
+	A -> C [label="Поезд 1", color="#3bafda"];
+	B -> D [label="Поезд 2", color="#3bafda"];
+	C -> D [label="Электричка", color="#48cfad"];
+	D -> E [label="Такси", color="#f6bb42"];
+}
