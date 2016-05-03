@@ -14,11 +14,11 @@ digraph example {
 	F [label="17", fillcolor="#f6bb42"];
 	G [label="17", fillcolor="#f6bb42"];
 	H [label="19", fillcolor="#f6bb42"];
-	I [label="inf", fillcolor="#fc6e51"];
-	J [label="inf", fillcolor="#fc6e51"];
-	K [label="inf", fillcolor="#fc6e51"];
-	L [label="inf", fillcolor="#fc6e51"];
-	M [label="inf", fillcolor="#fc6e51"];
+	I [label="∞", fillcolor="#fc6e51"];
+	J [label="∞", fillcolor="#fc6e51"];
+	K [label="∞", fillcolor="#fc6e51"];
+	L [label="∞", fillcolor="#fc6e51"];
+	M [label="∞", fillcolor="#fc6e51"];
 	A->B [label="4"];
 	A->C [label="6"];
 	B->D [label="3"];

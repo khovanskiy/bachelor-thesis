@@ -1,0 +1,22 @@
+# train 		= 3bafda
+# local train 	= 48cfad
+# bus 			= ea89bf
+# taxi			= f6bb42
+# plane			= fc6e51
+# light			= aab2bc
+# dark			= 434a54
+digraph example {
+	rankdir = LR;
+	node [style=filled, shape=circle, fillcolor="#aab2bc", fontcolor="#000000"];
+	A;
+	B;
+	C;
+	D;
+	A -> B [label="Автобус, 50км", color="#ea89bf"];
+	A -> D [label="Самолет 1, 100км", color="#fc6e51"];
+	A -> C [label="Поезд 1, 40км", color="#3bafda"];
+	B -> A [label="Поезд 2, 35км", color="#3bafda"];
+	C -> B [label="Электричка, 55км", color="#48cfad"];
+	D -> A [label="Самолет 2, 100км", color="#fc6e51"];
+	D -> B [label="Поезд 2, 70км", color="#3bafda"];
+}
