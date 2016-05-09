@@ -532,7 +532,8 @@
 		\titletabutwo{Специальное звание}{\uline{~\hfill~}}\\
 		\titletabutwow{Наименование темы}{\thetitle}\\
 		\titletabutwo{Научный руководитель}{\uline{\hfill\thesupervisor, \thesupervisordegree\hfill~}}\\
-		\titletabutwo{Консультант}{\uline{\hfill\theconsultantwithdegree\hfill~}}\\
+		\titletabutwo{Научный}{\uline{\hfill\thesupervisor, \thesupervisordegree\hfill~}}\\
+		\titletabutwo{Консультант}{\uline{\hfill\thesupervisor\hfill~}}\\
 		\begin{center}
 			\MakeUppercase{\textbf{Краткое содержание магистерской диссертации и основные выводы}}
 		\end{center}

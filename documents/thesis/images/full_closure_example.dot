@@ -1,0 +1,48 @@
+# train 		= 3bafda
+# local train 	= 48cfad
+# bus 			= ea89bf
+# taxi			= f6bb42
+# plane			= fc6e51
+# light			= aab2bc
+# dark			= 434a54
+digraph example {
+	rankdir = LR;
+	node [style=filled, shape=circle, fillcolor="#ffffff", fontcolor="#000000"];
+	subgraph cluster_A {
+		"At@8:05";
+		"Ad@8:05";
+	}
+	subgraph cluster_B {
+		"Ba@9:55";
+		"Bt@10:02";
+		"Bd@10:02";
+	}
+	subgraph cluster_C {
+		"Ca@11:57";
+		"Ct@12:00";
+		"Cd@12:00";
+		"Ct@12:03";
+		"Cd@12:03";
+		"Ct@13:00";
+		"Cd@13:00";
+	}
+	subgraph cluster_D {
+		"Da@13:20";
+	}
+	"At@8:05" -> "Ad@8:05";
+	"Ad@8:05" -> "Ba@9:55";
+	"Bt@10:02" -> "Bd@10:02";
+	"Ba@9:55" -> "Bd@10:02";
+	"Bd@10:02" -> "Ca@11:57";
+	"Ca@11:57" -> "Cd@12:00";
+	"Ct@12:00" -> "Cd@12:00";
+	"Cd@12:00" -> "Da@13:20";
+	"Ct@12:00" -> "Ct@12:03";
+	"Ct@12:03" -> "Cd@12:03";
+	"Ct@12:03" -> "Ct@13:00";
+	"Ct@13:00" -> "Cd@13:00";
+	"Ct@12:00" -> "Ct@13:00";
+
+	"Ad@8:05" -> "Ca@11:57" [style=dashed];
+	"Ad@8:05" -> "Da@13:20" [style=dashed];
+}
