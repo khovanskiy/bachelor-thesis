@@ -8,7 +8,7 @@
 digraph example {
 	rankdir = LR;
 	node [style=filled, shape=circle, fillcolor="#ffffff", fontcolor="#000000"];
-	A [fillcolor="#fc6e51"];
+	A [fillcolor="#f55e61"];
 	B [fillcolor="#48cfad"];
 	C [fillcolor="#3bafda"];
 	D [fillcolor="#f6bb42"];
