@@ -1,0 +1,26 @@
+# train 		= 3bafda
+# local train 	= 48cfad
+# bus 			= ea89bf
+# taxi			= f6bb42
+# plane			= fc6e51
+# light			= aab2bc
+# dark			= 434a54
+digraph example {
+	rankdir = LR;
+	node [style=filled, shape=circle, fillcolor="#ffffff", fontcolor="#000000"];
+	TransportType [label="Траспорт", fillcolor="#48cfad"];
+	Train [label="Поезд"];
+	TrainNumber [label="Номер\nMax", fillcolor="#f55e61"];
+	CarriageType [label="Вагон\nSum", fillcolor="#3bafda"]
+	CarriageTypeCoupe [label="Купе"];
+	CarriageTypeOpenPlan [label="Плацкарт"];
+	Upper [label="Верхнее\nSum", fillcolor="#3bafda"];
+	Lower [label="Нижнее\nSum", fillcolor="#3bafda"];
+	TransportType -> Train;
+	Train -> TrainNumber;
+	Train -> CarriageType;
+	CarriageType -> CarriageTypeCoupe;
+	CarriageType -> CarriageTypeOpenPlan;
+	CarriageTypeCoupe -> Upper;
+	CarriageTypeCoupe -> Lower;
+}
