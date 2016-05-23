@@ -7,7 +7,7 @@
 # dark			= 434a54
 digraph example {
 	rankdir = LR;
-	node [style=filled, shape=circle, fillcolor="#aab2bc", fontcolor="#000000"];
+	node [style=filled, shape=circle, fillcolor="#ffffff", fontcolor="#000000"];
 	A;
 	B;
 	C;
