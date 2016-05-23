@@ -58,21 +58,18 @@
 	\practicalimplications{Результаты данной работы, реализованные в виде ПО, проходят испытания перед внедрением.}
 	
 	%% Эта команда генерирует титульный лист и аннотацию.
-	%\makebachelortitle
+	\makebachelortitle
 	
 	%% Оглавление
 	\tableofcontents
 	
-	%% Макрос для введения. Совместим со старым стилевиком.
-	\startprefacepage
+	\input{chapters/intro.tex}
 	
 	\input{chapters/chapter-1.tex}
 	\input{chapters/chapter-2.tex}
 	\input{chapters/chapter-3.tex}
 	
-	%% Макрос для заключения. Совместим со старым стилевиком.
-	\startconclusionpage
-	
+	\input{chapters/conclusion.tex}
 	%В данном разделе размещается заключение.
 	
 	%% Обратите внимание на heading. Без него тоже работает, но название будет другим.
