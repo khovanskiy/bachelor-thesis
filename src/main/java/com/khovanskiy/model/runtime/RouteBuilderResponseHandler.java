@@ -1,4 +1,7 @@
-package com.khovanskiy.model;
+package com.khovanskiy.model.runtime;
+
+import com.khovanskiy.model.Path;
+import com.khovanskiy.model.Properties;
 
 import java.util.Iterator;
 import java.util.List;

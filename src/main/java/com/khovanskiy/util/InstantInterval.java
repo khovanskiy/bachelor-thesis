@@ -2,6 +2,7 @@ package com.khovanskiy.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Wither;
 
 import java.time.Instant;
@@ -12,6 +13,7 @@ import java.time.Instant;
  * @author victor
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Wither
 public class InstantInterval {

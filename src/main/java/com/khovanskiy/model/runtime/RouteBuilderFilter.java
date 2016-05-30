@@ -1,4 +1,4 @@
-package com.khovanskiy.model;
+package com.khovanskiy.model.runtime;
 
 import java.util.function.Predicate;
 

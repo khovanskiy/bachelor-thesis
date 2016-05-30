@@ -8,7 +8,7 @@ import lombok.Data;
  * @author victor
  */
 @Data
-public class SchedulePage {
+public class SchedulePage extends Model<SchedulePage> {
     /**
      * Расписание прибытий
      */

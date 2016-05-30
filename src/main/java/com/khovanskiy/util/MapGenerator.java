@@ -1,8 +1,10 @@
 package com.khovanskiy.util;
 
 import com.khovanskiy.model.*;
+import com.khovanskiy.service.Repository;
 import com.khovanskiy.service.TransportRunService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -26,7 +28,7 @@ public class MapGenerator {
 
     private final Random random;
 
-    private final RxRepository repo;
+    private final Repository repository;
 
     private final TransportRunService transportRunService;
 
@@ -42,10 +44,10 @@ public class MapGenerator {
 
     private final IdxGen<HighComfortCarriage> highComfortCarriageIdxGen = new IdxGen<>();
 
-    public MapGenerator(MapConfiguration config, RxRepository repo, TransportRunService transportRunService) {
+    public MapGenerator(MapConfiguration config, Repository repository, TransportRunService transportRunService) {
         this.config = config;
         this.random = new Random(config.getGraphSeed());
-        this.repo = repo;
+        this.repository = repository;
         this.transportRunService = transportRunService;
     }
 
@@ -105,7 +107,7 @@ public class MapGenerator {
             for (GeoPoint geoPoint : geoPoints) {
                 refs.add(geoPoint.getPoint().getId());
             }
-            CityPoint point = new CityPoint("hub_" + i + "", name, ZoneId.systemDefault(), refs, "1234567");
+            CityPoint point = new CityPoint("hub_" + i + "", name, ZoneId.systemDefault(), refs);
             GeoPoint geoPoint = new GeoPoint(point, x, y);
             log.info((i + 1) + ") " + geoPoint);
             list.add(geoPoint);
@@ -121,8 +123,8 @@ public class MapGenerator {
         List<GeoPoint> list = new ArrayList<>(config.getPointsCount());
         for (int i = 0; i < config.getPointsCount(); ++i) {
             String name = nextName(i);
-            StationPoint point = new StationPoint(i + "", name, ZoneId.systemDefault(), "1234567");
-            point = point.withState(State.ACTIVE);
+            StationPoint point = new StationPoint(i + "", name, ZoneId.systemDefault());
+            point.setState(State.ACTIVE);
             int x = randomRange(config.getSpreadX());
             int y = randomRange(config.getSpreadY());
             GeoPoint geoPoint = new GeoPoint(point, x, y);
@@ -153,9 +155,9 @@ public class MapGenerator {
 
     private void saveTrainRuns(List<TrainRun> runs) {
         log.info("Сохранение " + runs.size() + " маршрутов в репозиторий...");
-        runs.forEach(repo::create);
+        runs.forEach(repository::create);
         /*runs.forEach(model -> {
-            repo.create(model);
+            repository.create(model);
             List<DateTrainRunEntry.KeyDay> ks = DateTrainRunEntry.getKeys(model.getDepartureTime(), model.getArrivalTime());
             ks.stream().forEach(key -> {
                 FunFuture<DateTrainRunEntry> ff = dayTrainRun.find(key);
@@ -174,7 +176,7 @@ public class MapGenerator {
 
     private void savePoints(List<GeoPoint> points) {
         log.info("Сохранение " + points.size() + " точек в репозиторий...");
-        points.forEach(p -> repo.create(p.getPoint()));
+        points.forEach(p -> repository.create(p.getPoint()));
     }
 
     private <T> T randomElement(List<T> list) {
@@ -185,11 +187,10 @@ public class MapGenerator {
         List<RailwayCarrier> railwayCarriers = new ArrayList<>();
         for (String railwayCarrierName : config.getRailwayCarrierNames()) {
             RailwayCarrier railwayCarrier = new RailwayCarrier();
-            railwayCarrier = railwayCarrier.withState(State.ACTIVE);
+            railwayCarrier.setState(State.ACTIVE);
             railwayCarrier.setFullName(railwayCarrierName);
-            RailwayCarrier.Id id = new RailwayCarrier.Id();
-            id.setId(railwayCarrierName);
-            railwayCarriers.add(railwayCarrier.withId(id));
+            railwayCarrier.setId(new RailwayCarrier.Id(railwayCarrierName));
+            railwayCarriers.add(railwayCarrier);
         }
         return railwayCarriers;
     }
@@ -197,8 +198,9 @@ public class MapGenerator {
     private List<TrainCategory> generateTrainCategories() {
         List<TrainCategory> trainCategories = new ArrayList<>();
         for (String trainCategoryName : config.getTrainCategoryNames()) {
-            TrainCategory trainCategory = new TrainCategory(trainCategoryName, 1, 5, "", null, "", "");
-            trainCategories.add(trainCategory.withState(State.ACTIVE));
+            TrainCategory trainCategory = new TrainCategory(trainCategoryName, 1, 5);
+            trainCategory.setState(State.ACTIVE);
+            trainCategories.add(trainCategory);
             return trainCategories;
         }
         return trainCategories;
@@ -227,8 +229,6 @@ public class MapGenerator {
         switch (carriageType) {
             case COUPE: {
                 Idx<CoupeCarriage> idx = coupeCarriageIdxGen.get();
-                CoupeCarriage carriage = new CoupeCarriage(idx, "T" + idx.getNumber(), businessCarriageTypes[carriageTypeNumber],
-                        com.transit.integrations.model.dictionary.ensi.CarriageSubType.empty(), null);
                 List<CoupeCarriage.Coupe> coupes = new ArrayList<>();
                 for (int i = 0; i < coupeNumber; i++) {
                     List<CoupeCarriage.Seat> seats = new ArrayList<>();
@@ -238,7 +238,7 @@ public class MapGenerator {
                     }
                     coupes.add(new CoupeCarriage.Coupe(seats.size(), seats));
                 }
-                return carriage.withCoupes(coupes);
+                return new CoupeCarriage(idx, "T" + idx.getNumber(), businessCarriageTypes[carriageTypeNumber], coupes);
             }
             case HIGH_COMFORT: {
                 Idx<HighComfortCarriage> idx = highComfortCarriageIdxGen.get();
@@ -339,18 +339,11 @@ public class MapGenerator {
                 currentInstant = currentInstant.plus(Duration.ofMinutes((long) segmentTime));
             }
             RailwayCarrier railwayCarrier = railwayCarriers.get(random.nextInt(railwayCarriers.size()));
-            TrainConfig trainConfig = new TrainConfig();
-            trainConfig = trainConfig.withName("Train config " + i);
-            trainConfig = trainConfig.withCarrier(railwayCarrier.getId());
-            trainConfig = trainConfig.withId(new TrainConfig.Id("Train config " + i));
-            trainConfig = trainConfig.withState(State.ACTIVE);
-            repo.create(trainConfig);
             TrainRun run = new TrainRun(new TrainRun.Id("TrainRun" + i), "TrainRun" + i,
-                    waypoints, trainConfig.getId(), new ArrayList<>());
-            run = run.withState(State.ACTIVE);
-            run = run.withWaypoints(waypoints);
+                    waypoints);
+            run.setState(State.ACTIVE);
             List<Carriage> carriages = generateCarriages(businessCarriageTypes);
-            run.fillRailwayRun(run, railwayCarrier.getId(), 45, RailwayRun.CarriageGroupType.BASIC, true, carriages);
+            run.fillRailwayRun(run, railwayCarrier.getId(), 45, carriages);
             runs.add(run);
 
             /*log.info("Маршрут " + run + " ");
@@ -364,7 +357,7 @@ public class MapGenerator {
     }
 
     private void updateRuns() {
-        List<TrainRun> runs = repo.findAll(TrainRun.class);
+        List<TrainRun> runs = repository.findAll(TrainRun.class);
         log.info("Построение пересадок для " + runs.size() + " маршрутов...");
         for (int i = 0; i < runs.size(); ++i) {
             transportRunService.updateTransfers(runs.get(i));

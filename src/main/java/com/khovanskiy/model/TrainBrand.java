@@ -8,18 +8,18 @@ import org.apache.commons.lang3.ObjectUtils;
 import java.io.Serializable;
 
 /**
- * Номер поезда
+ * Бренд поезда
  *
  * @author victor
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrainNumber implements Comparable<TrainNumber>, Serializable {
-    private String number;
+public class TrainBrand implements Comparable<TrainBrand>, Serializable {
+    protected String name;
 
     @Override
-    public int compareTo(TrainNumber o) {
-        return ObjectUtils.compare(number, o.number);
+    public int compareTo(TrainBrand o) {
+        return ObjectUtils.compare(name, o.name);
     }
 }

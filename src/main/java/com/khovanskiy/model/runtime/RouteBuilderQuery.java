@@ -1,5 +1,7 @@
-package com.khovanskiy.model;
+package com.khovanskiy.model.runtime;
 
+import com.khovanskiy.model.PointTimeInterval;
+import com.khovanskiy.model.ResultPresentation;
 import lombok.Data;
 import lombok.NonNull;
 

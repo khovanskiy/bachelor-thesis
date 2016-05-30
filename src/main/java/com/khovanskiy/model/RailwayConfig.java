@@ -1,7 +1,16 @@
 package com.khovanskiy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author victor
  */
-public class RailwayConfig<B extends TransportConfig<B>> extends TransportConfig<B> {
+@Getter
+@Setter
+public abstract class RailwayConfig<B extends TransportConfig<B>> extends TransportConfig<B> {
+    /**
+     * Перевозчик
+     */
+    Ref<RailwayCarrier> carrier;
 }

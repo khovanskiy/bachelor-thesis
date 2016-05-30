@@ -1,11 +1,11 @@
 package com.khovanskiy.config;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * @author victor
  */
-@Getter
+@Data
 public class RouteBuilderConfig {
     private int maxTransfersCount;
     private int minTransferTime;

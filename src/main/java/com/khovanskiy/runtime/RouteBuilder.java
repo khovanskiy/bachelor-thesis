@@ -3,12 +3,16 @@ package com.khovanskiy.runtime;
 import com.khovanskiy.config.RouteBuilderConfig;
 import com.khovanskiy.exception.InvalidNumberOfResultException;
 import com.khovanskiy.model.*;
+import com.khovanskiy.model.runtime.RouteBuilderFilter;
+import com.khovanskiy.model.runtime.RouteBuilderQuery;
+import com.khovanskiy.model.runtime.RouteBuilderResponse;
+import com.khovanskiy.model.runtime.RouteBuilderResponseHandler;
+import com.khovanskiy.service.Repository;
 import com.khovanskiy.util.InstantInterval;
 import com.khovanskiy.util.LRUCache;
 import com.khovanskiy.util.Now;
 import com.khovanskiy.util.SegmentTree;
 import com.khovanskiy.util.Timeline;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
@@ -39,11 +43,8 @@ public class RouteBuilder {
      */
     private LRUCache<Integer, Algorithm> requests;
 
-    private RxRepositoryBackend repository;
+    private Repository repository;
 
-    private TransportationOfferHandler transportationOfferHandler;
-
-    @Override
     @SuppressWarnings("unchecked")
     public void update(List<? extends TransportRun> added, List<? extends TransportRun> updated, List<? extends TransportRun> deleted) {
         for (TransportRun transportRun : added) {
@@ -65,7 +66,8 @@ public class RouteBuilder {
                 assert w.getDeparture() != null;
                 Ref<SchedulePage> schedulePageId = new SchedulePage.Id(w.getPoint().toString(), getDayOfInstant(w.getDeparture()));
                 SchedulePage schedulePage = repository.find(schedulePageId).orElseGet(() -> {
-                    SchedulePage var = new SchedulePage().withId(schedulePageId);
+                    SchedulePage var = new SchedulePage();
+                    var.setId(schedulePageId);
                     repository.create(var);
                     return var;
                 });
@@ -76,7 +78,7 @@ public class RouteBuilder {
                 if (i != 0) {
                     schedulePage.getArrivalTimeline().put(w.getArrival(), stop);
                 }
-                repository.update(schedulePage);
+                repository.create(schedulePage);
                 //}
             }
         }
@@ -87,7 +89,7 @@ public class RouteBuilder {
         return ZonedDateTime.ofInstant(instant, ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS).toInstant().toEpochMilli();
     }
 
-    /**
+    /*
      * Получение списка остановок, попадающих в данный интервал времени
      *
      * @param timeline временная шкала с полным списоком остановок
@@ -124,12 +126,10 @@ public class RouteBuilder {
     @SuppressWarnings("unchecked")
     public List<ForwardSegment> successors(Collection<Ref<? extends Point>> departures, Stop A,
                                            Collection<Ref<? extends Point>> arrivals, Predicate<Properties> propertiesFilter) {
-        Optional<? extends TransportRunEntity> optional = repository.findEntity(A.getRef());
-        TransportRunEntity entity = optional.get();
-        TransportRun model = (TransportRun) entity.getModel();
+        TransportRun model = (TransportRun) repository.find(A.getRef()).get();
 
         List<ForwardSegment> segments = new ArrayList<>();
-        SegmentTree<Properties> modelProperties = entity.getProperties();
+        SegmentTree<Properties> modelProperties = model.getProperties();
 
         // Проверка, можно ли доехать на текущем транспорте без пересадки
         List<Waypoint> waypoints = model.getWaypoints();
@@ -172,9 +172,7 @@ public class RouteBuilder {
                         // Недопустим цикл на одной линии (движение прямо на предыдущую станцию движения)
                         // В такой реализации бьёт по производительности,
                         Ref nextRef = C.getRef();
-                        Optional<? extends TransportRunEntity> nextOptional = repository.findEntity(nextRef);
-                        TransportRunEntity nextEntity = nextOptional.get();
-                        TransportRun nextModel = (TransportRun) nextEntity.getModel();
+                        TransportRun nextModel = (TransportRun) repository.find(nextRef).get();
                         List<Waypoint> nextWaypoints = nextModel.getWaypoints();
                         int nextNumber = C.getNumber() + 1;
                         boolean backwardDirection = false;
