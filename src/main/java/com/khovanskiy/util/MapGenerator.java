@@ -315,7 +315,7 @@ public class MapGenerator {
                         arrTime,
                         currentInstant,
                         carryingTrain,
-                        distance, null, null);
+                        distance);
                 waypoints.add(wp);
 
                 List<GeoPoint> neighbours = new ArrayList<>(currentPoint.neighbours);

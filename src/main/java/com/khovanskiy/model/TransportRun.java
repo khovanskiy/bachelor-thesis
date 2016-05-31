@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Транспортный рейс
+ *
  * @author victor
  */
 @Data
@@ -18,6 +20,9 @@ public class TransportRun<R extends TransportRun<R, W, P>, W extends Waypoint<W,
      */
     protected List<W> waypoints = new ArrayList<>();
 
+    /**
+     * Дерево свойств рейса
+     */
     protected SegmentTree<Properties> properties = new PropertiesSegmentTree(Properties.empty());
 
     protected void fillTransportRun(TransportRun run, String name, List<W> waypoints) {

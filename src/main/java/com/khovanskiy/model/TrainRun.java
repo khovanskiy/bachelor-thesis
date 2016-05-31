@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
+ * Рейс дальнего следования
+ *
  * @author victor
  */
 public class TrainRun extends RailwayRun<TrainRun> {
