@@ -2,6 +2,7 @@ package com.khovanskiy.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -11,6 +12,8 @@ import java.util.List;
 /**
  * @author victor
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class CityPoint extends Point<CityPoint> {
     private static final long serialVersionUID = 467172015693182866L;
     private List<Ref<? extends Point>> refPoints;

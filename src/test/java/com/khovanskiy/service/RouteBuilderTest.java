@@ -12,6 +12,7 @@ import com.khovanskiy.runtime.DefaultRouteBuilderFilter;
 import com.khovanskiy.runtime.DefaultRouteBuilderHandler;
 import com.khovanskiy.runtime.DefaultRouteBuilderResponse;
 import com.khovanskiy.runtime.RouteBuilder;
+import com.khovanskiy.runtime.RouteBuilderY;
 import com.khovanskiy.util.GeneratedMap;
 import com.khovanskiy.util.InstantInterval;
 import com.khovanskiy.util.MapConfiguration;
@@ -74,7 +75,7 @@ public class RouteBuilderTest {
     /**
      * Текущие права
      */
-    public static final int CURRENT_MODE = BUILDER_FETCH;
+    public static final int CURRENT_MODE = VISUALIZE_MODEL;
     @Test
     public void main() {
         MapConfiguration configuration = MapConfiguration.getDefaultConfiguration();
@@ -83,6 +84,8 @@ public class RouteBuilderTest {
         GeneratedMap map = generator.generate();
 
         if ((CURRENT_MODE & VISUALIZE_MODEL) == VISUALIZE_MODEL) {
+            RouteBuilderY routeBuilderY = new RouteBuilderY(repository);
+            routeBuilderY.allocateHubs(map.getStations());
             Visualizer.visualize(repository, "/tmp/model.dot");
         }
 

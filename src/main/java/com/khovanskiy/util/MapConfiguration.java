@@ -19,15 +19,15 @@ public class MapConfiguration {
     /**
      * Пространственный разброс по X
      */
-    private Pair<Integer, Integer> spreadX = Pair.of(0, 500);
+    private Pair<Integer, Integer> spreadX = Pair.of(0, 50);
     /**
      * Пространственный разброс по Y
      */
-    private Pair<Integer, Integer> spreadY = Pair.of(0, 500);
+    private Pair<Integer, Integer> spreadY = Pair.of(0, 50);
     /**
      * Максимальное расстояние между соседними станциями
      */
-    private int maxNeighboursRadius = 1000;
+    private int maxNeighboursRadius = 10;
     /**
      * Максимальное количество соседних станций
      */
@@ -35,7 +35,7 @@ public class MapConfiguration {
     /**
      * Количество точек (станции, аэропорты и т.д.)
      */
-    private int pointsCount = 5;
+    private int pointsCount = 250;
     /**
      * Количество хабов
      */
@@ -43,7 +43,7 @@ public class MapConfiguration {
     /**
      * Максимальное расстояние от центра хаба
      */
-    private int maxHubsRadius = 100;
+    private int maxHubsRadius = 20;
     /**
      * Разброс количества станций, которые могут быть в хабе
      */
@@ -51,11 +51,11 @@ public class MapConfiguration {
     /**
      * Количество поездов
      */
-    private int maxTrainsCount = 5;
+    private int maxTrainsCount = 70;
     /**
      * Количество уникальных маршрутов
      */
-    private int maxRunsCount = 5;
+    private int maxRunsCount = 70;
     /**
      * Разброс количества точек, через которые проходит маршрут
      */

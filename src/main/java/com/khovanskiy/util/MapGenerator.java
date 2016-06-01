@@ -3,8 +3,10 @@ package com.khovanskiy.util;
 import com.khovanskiy.model.*;
 import com.khovanskiy.service.Repository;
 import com.khovanskiy.service.TransportRunService;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.distribution.EnumeratedDistribution;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -18,6 +20,8 @@ import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author victor
@@ -314,16 +318,25 @@ public class MapGenerator {
                         distance);
                 waypoints.add(wp);
 
-                List<GeoPoint> neighbours = new ArrayList<>(currentPoint.neighbours);
-                Collections.shuffle(neighbours, random);
-                GeoPoint next = null;
-                for (GeoPoint neighbour : neighbours) {
+                EnumeratedDistribution<GeoPoint> neighbours;
+                final GeoPoint fCurrentPoint = currentPoint;
+                List<org.apache.commons.math3.util.Pair<GeoPoint, Double>> list = currentPoint.neighbours.stream()
+                        .filter(n -> !visited.contains(n))
+                        .map(q -> new org.apache.commons.math3.util.Pair<>(q, 1.0 / distance(fCurrentPoint, q)))
+                        .collect(Collectors.toList());
+                if (list.isEmpty()) {
+                    break;
+                }
+                neighbours = new EnumeratedDistribution<>(list);
+                //Collections.shuffle(neighbours, random);
+                GeoPoint next = neighbours.sample();
+                /*for (GeoPoint neighbour : neighbours) {
                     if (!visited.contains(neighbour)) {
                         visited.add(neighbour);
                         next = neighbour;
                         break;
                     }
-                }
+                }*/
                 if (next == null) {
                     break;
                 }
@@ -381,7 +394,9 @@ public class MapGenerator {
 
     public static class GeoPoint {
         Point point;
+        @Getter
         int x;
+        @Getter
         int y;
         List<GeoPoint> neighbours = new ArrayList<>();
 

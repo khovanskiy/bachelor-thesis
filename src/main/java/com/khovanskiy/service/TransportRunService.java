@@ -1,9 +1,6 @@
 package com.khovanskiy.service;
 
-import com.khovanskiy.model.PropertiesSegmentTree;
 import com.khovanskiy.model.TransportRun;
-
-import java.util.function.Function;
 
 /**
  * @author victor
