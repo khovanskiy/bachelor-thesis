@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 /**
  * @author victor
  */
@@ -16,13 +18,11 @@ public class RepositoryTest {
     @Before
     public void save() {
         Ref<TrainRun> trainRunId1 = new TrainRun.Id("1");
-        TrainRun trainRun1 = new TrainRun();
-        trainRun1.setId(trainRunId1);
+        TrainRun trainRun1 = new TrainRun(trainRunId1, "T1", new ArrayList<>());
         repository.create(trainRun1);
 
         Ref<TrainRun> trainRunId2 = new TrainRun.Id("2");
-        TrainRun trainRun2 = new TrainRun();
-        trainRun2.setId(trainRunId2);
+        TrainRun trainRun2 = new TrainRun(trainRunId2, "T2", new ArrayList<>());
         repository.create(trainRun2);
     }
 

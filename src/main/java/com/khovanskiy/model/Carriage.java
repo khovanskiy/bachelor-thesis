@@ -25,6 +25,21 @@ public abstract class Carriage<C extends Carriage<C>> {
     @Getter
     @EqualsAndHashCode
     public static abstract class Seat<S extends Seat<S>> {
-        String carriageNumber;
+        /**
+         * ID места
+         */
+        protected Idx<S> idx;
+        /**
+         * ID вагона
+         */
+        protected Idx<? extends Carriage> carriageIdx;
+        /**
+         * Номер места
+         */
+        protected String number;
+        /**
+         * Номер вагона
+         */
+        protected String carriageNumber;
     }
 }

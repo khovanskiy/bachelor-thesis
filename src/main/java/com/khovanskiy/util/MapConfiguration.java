@@ -16,7 +16,6 @@ import java.util.List;
  */
 @Data
 public class MapConfiguration {
-
     /**
      * Пространственный разброс по X
      */
@@ -24,56 +23,48 @@ public class MapConfiguration {
     /**
      * Пространственный разброс по Y
      */
-    private Pair<Integer, Integer> spreadY;
+    private Pair<Integer, Integer> spreadY = Pair.of(0, 500);
     /**
      * Максимальное расстояние между соседними станциями
      */
-    private int maxNeighboursRadius;
+    private int maxNeighboursRadius = 1000;
     /**
      * Максимальное количество соседних станций
      */
-    private int maxNeighboursCount;
+    private int maxNeighboursCount = 15;
     /**
      * Количество точек (станции, аэропорты и т.д.)
      */
-    private int pointsCount;
+    private int pointsCount = 5;
     /**
      * Количество хабов
      */
-    private int hubsCount;
+    private int hubsCount = 0;
     /**
      * Максимальное расстояние от центра хаба
      */
-    private int maxHubsRadius;
+    private int maxHubsRadius = 100;
     /**
      * Разброс количества станций, которые могут быть в хабе
      */
-    private Pair<Integer, Integer> hubSizeSpread;
+    private Pair<Integer, Integer> hubSizeSpread = Pair.of(2, 5);
     /**
      * Количество поездов
      */
-    private int maxTrainsCount;
+    private int maxTrainsCount = 5;
     /**
      * Количество уникальных маршрутов
      */
-    private int maxRunsCount;
+    private int maxRunsCount = 5;
     /**
      * Разброс количества точек, через которые проходит маршрут
      */
-    private Pair<Integer, Integer> pointsInRunSpread;
+    private Pair<Integer, Integer> pointsInRunSpread = Pair.of(5, 15);
     /**
      * Интервал времени, в пределах которого будут дублироваться уникальные маршруты со смещением по времени
      */
-    private Pair<Integer, Integer> trainWaitingSpread;
+    private Pair<Integer, Integer> trainWaitingSpread = Pair.of(0, 5);
     private InstantInterval timeInterval = new InstantInterval();
-    /**
-     * Количество потоков
-     */
-    private int threadsCount;
-    /**
-     * Количество запросов (удачных)
-     */
-    private int queriesCount;
     /**
      * Бренды поездов.
      */
@@ -113,20 +104,6 @@ public class MapConfiguration {
 
     public static MapConfiguration getDefaultConfiguration() {
         MapConfiguration config = new MapConfiguration();
-        config.setSpreadX(Pair.of(0, 500));
-        config.setSpreadY(Pair.of(0, 500));
-        config.setMaxNeighboursRadius(1000);
-        config.setMaxNeighboursCount(15);
-        config.setPointsCount(50);
-        config.setHubsCount(0);
-        config.setMaxHubsRadius(100);
-        config.setHubSizeSpread(Pair.of(2, 5));
-        config.setMaxTrainsCount(500);
-        config.setMaxRunsCount(500);
-        config.setPointsInRunSpread(Pair.of(5, 15));
-        config.setTrainWaitingSpread(Pair.of(0, 5));
-        config.setThreadsCount(1);
-        config.setQueriesCount(1000);
         config.setTrainBrands(Arrays.asList(new TrainBrand("B1"),
                 new TrainBrand("B2"), new TrainBrand("B3")));
         config.setTrainCategoryNames(Arrays.asList("C1", "C2", "C3"));

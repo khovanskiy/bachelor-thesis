@@ -1,6 +1,7 @@
 package com.khovanskiy.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -8,7 +9,7 @@ import java.time.Instant;
 /**
  * @author victor
  */
-@Getter
+@Data
 @AllArgsConstructor
 public class Stop<R extends TransportRun<R, ?, P>, P extends Point<P>> {
     /**

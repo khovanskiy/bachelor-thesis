@@ -57,6 +57,7 @@ public class CoupeCarriage extends TrainCarriage<CoupeCarriage> {
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public static class Seat extends Carriage.Seat<Seat> {
+
         public Seat(Idx seatIdx, String seatNum,
                     Idx<? extends Carriage> carriageIdx, String carriageNum) {
             this.idx = seatIdx;

@@ -36,14 +36,19 @@ import java.util.function.Predicate;
  */
 @Slf4j
 public class RouteBuilder {
-    private RouteBuilderConfig config;
+    private final RouteBuilderConfig config;
 
     /**
      * Кеш запросов текущего RouteBuilder
      */
     private LRUCache<Integer, Algorithm> requests;
 
-    private Repository repository;
+    private final Repository repository;
+
+    public RouteBuilder(RouteBuilderConfig config, Repository repository) {
+        this.config = config;
+        this.repository = repository;
+    }
 
     @SuppressWarnings("unchecked")
     public void update(List<? extends TransportRun> added, List<? extends TransportRun> updated, List<? extends TransportRun> deleted) {

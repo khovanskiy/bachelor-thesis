@@ -3,20 +3,22 @@ package com.khovanskiy.model;
 import com.khovanskiy.util.Timeline;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author victor
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class SchedulePage extends Model<SchedulePage> {
     /**
      * Расписание прибытий
      */
-    Timeline<StopLight> arrivalTimeline = new Timeline<>();
+    protected Timeline<StopLight> arrivalTimeline = new Timeline<>();
     /**
      * Расписание отправлений
      */
-    Timeline<StopLight> departureTimeline = new Timeline<>();
+    protected Timeline<StopLight> departureTimeline = new Timeline<>();
 
     @Data
     @AllArgsConstructor

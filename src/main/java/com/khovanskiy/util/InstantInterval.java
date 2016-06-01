@@ -20,10 +20,22 @@ public class InstantInterval {
     /**
      * Дата и время начала
      */
-    Instant since;
+    protected Instant since;
 
     /**
      * Дата и время конца
      */
-    Instant till;
+    protected Instant till;
+
+    public static InstantInterval full() {
+        return new InstantInterval(null, null);
+    }
+
+    public static InstantInterval since(Instant instant) {
+        return new InstantInterval(instant, null);
+    }
+
+    public static InstantInterval till(Instant instant) {
+        return new InstantInterval(null, instant);
+    }
 }

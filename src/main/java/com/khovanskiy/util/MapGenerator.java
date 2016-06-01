@@ -242,8 +242,6 @@ public class MapGenerator {
             }
             case HIGH_COMFORT: {
                 Idx<HighComfortCarriage> idx = highComfortCarriageIdxGen.get();
-                HighComfortCarriage carriage = new HighComfortCarriage(idx, "T" + idx.getNumber(), businessCarriageTypes[carriageTypeNumber],
-                        com.transit.integrations.model.dictionary.ensi.CarriageSubType.empty(), null);
                 List<HighComfortCarriage.Coupe> coupes = new ArrayList<>();
                 for (int i = 0; i < coupeNumber; i++) {
                     List<HighComfortCarriage.Seat> seats = new ArrayList<>();
@@ -253,13 +251,11 @@ public class MapGenerator {
                     }
                     coupes.add(new HighComfortCarriage.Coupe(seats.size(), seats));
                 }
-                return carriage.withCoupes(coupes);
+                return new HighComfortCarriage(idx, "T" + idx.getNumber(), businessCarriageTypes[carriageTypeNumber], coupes);
             }
             case OPEN_PLAN:
             default: {
                 Idx<OpenPlanCarriage> idx = openPlanCarriageIdxGen.get();
-                OpenPlanCarriage carriage = new OpenPlanCarriage(idx, "T" + idx.getNumber(), businessCarriageTypes[carriageTypeNumber],
-                        com.transit.integrations.model.dictionary.ensi.CarriageSubType.empty(), null);
                 List<OpenPlanCarriage.Coupe> coupes = new ArrayList<>();
                 for (int i = 0; i < coupeNumber; i++) {
                     List<OpenPlanCarriage.Seat> seats = new ArrayList<>();
@@ -269,7 +265,7 @@ public class MapGenerator {
                     }
                     coupes.add(new OpenPlanCarriage.Coupe(seats.size(), seats));
                 }
-                return carriage.withCoupes(coupes);
+                return new OpenPlanCarriage(idx, "T" + idx.getNumber(), businessCarriageTypes[carriageTypeNumber], coupes);
             }
         }
     }
@@ -360,14 +356,14 @@ public class MapGenerator {
         List<TrainRun> runs = repository.findAll(TrainRun.class);
         log.info("Построение пересадок для " + runs.size() + " маршрутов...");
         for (int i = 0; i < runs.size(); ++i) {
-            transportRunService.updateTransfers(runs.get(i));
+            //transportRunService.updateTransfers(runs.get(i));
             log.info("Построено " + (i + 1) + "/" + runs.size());
         }
         log.info("Построение свойств для " + runs.size() + " маршрутов...");
 
-        /*runs.forEach(run -> {
+        runs.forEach(run -> {
             transportRunService.updateProperties(run);
-        });*/
+        });
     }
 
     private String nextName(int i) {

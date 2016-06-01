@@ -22,7 +22,11 @@ public class Repository {
 
     @SuppressWarnings("unchecked")
     public <M extends Model<M>> Optional<M> find(@NonNull Ref<M> id) {
-        return (Optional<M>) objects.getOrDefault(id.type(), Collections.emptyMap()).getOrDefault(id, Optional.empty());
+        M model = (M) objects.getOrDefault(id.type(), Collections.emptyMap()).get(id);
+        if (model == null) {
+            return Optional.empty();
+        }
+        return Optional.of(model);
     }
 
     public <M extends Model<M>> M create(@NonNull M model) {
