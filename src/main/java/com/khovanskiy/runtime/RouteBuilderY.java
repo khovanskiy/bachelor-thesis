@@ -8,7 +8,6 @@ import com.khovanskiy.model.TrainRun;
 import com.khovanskiy.model.Waypoint;
 import com.khovanskiy.service.Repository;
 import com.khovanskiy.util.MapGenerator;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,12 +18,15 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -53,12 +55,14 @@ public class RouteBuilderY {
         return ZonedDateTime.ofInstant(instant, ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS).toInstant().toEpochMilli();
     }
 
+    private static final String[] colors = new String[]{"white", "red", "darkorange", "blue", "green", "cyan3", "aquamarine3", "darkorchid", "navyblue"};
+
     /**
      * Выделение хабов среди обычных точек
      */
     public void allocateHubs(List<MapGenerator.GeoPoint> geoPoints) {
         log.info("Выделение регионов...");
-        Map<Ref<? extends Point>, HubInfo> mapOfApproachability = new HashMap<>();
+        Map<Ref<? extends Point>, HubInfo> infoMap = new HashMap<>();
         for (TrainRun trainRun : repository.findAll(TrainRun.class)) {
             for (int i = 0; i < trainRun.getWaypoints().size(); ++i) {
                 // текущая маршрутная точка
@@ -66,10 +70,10 @@ public class RouteBuilderY {
                 // следующая маршрутная точка
 
                 // обновляем карту достижимости между станциями
-                mapOfApproachability.computeIfAbsent(curW.getPoint(), key -> new HubInfo(0, key));
+                infoMap.computeIfAbsent(curW.getPoint(), key -> new HubInfo(0, key));
                 if (i < trainRun.getWaypoints().size() - 1) {
                     Waypoint nextW = trainRun.getWaypoints().get(i + 1);
-                    mapOfApproachability.compute(curW.getPoint(), (key, info) -> {
+                    infoMap.compute(curW.getPoint(), (key, info) -> {
                         info.runsCount++;
                         info.neighbours.add(nextW.getPoint());
                         return info;
@@ -82,13 +86,33 @@ public class RouteBuilderY {
             public int compare(HubInfo o1, HubInfo o2) {
                 return -Integer.compare(o1.runsCount, o2.runsCount);
             }
-        }).maximumSize(15).create();
-        for (HubInfo info : mapOfApproachability.values()) {
-            if (info.isLocalMax(mapOfApproachability)) {
+        }).maximumSize(7).create();
+        for (HubInfo info : infoMap.values()) {
+            if (info.isLocalMax(infoMap)) {
                 candidates.add(info);
             }
         }
-        candidates.forEach(System.out::println);
+        infoMap.values().forEach(info -> {
+            info.distances = new int[candidates.size()];
+            Arrays.fill(info.distances, Integer.MAX_VALUE);
+        });
+        int number = 0;
+        Queue<HubInfo> queue = new ArrayDeque<>();
+        for (HubInfo info : candidates) {
+            System.out.println("#" + number + " " + info);
+            info.distances[number] = 0;
+            for (Ref<? extends Point> neighbour : info.getNeighbours()) {
+                HubInfo nextInfo = infoMap.get(neighbour);
+                if (!candidates.contains(nextInfo)) {
+                    nextInfo.distances[number] = 1;
+                    queue.add(nextInfo);
+                }
+            }
+            ++number;
+        }
+        while (!queue.isEmpty()) {
+            queue.poll();
+        }
 
         log.info("Визуализация модели...");
         try (PrintWriter writer = new PrintWriter("/tmp/hubs.dot")) {
@@ -104,11 +128,11 @@ public class RouteBuilderY {
                 }
                 return id;
             });
-            for (Map.Entry<Ref<? extends Point>, HubInfo> entry : mapOfApproachability.entrySet()) {
+            for (Map.Entry<Ref<? extends Point>, HubInfo> entry : infoMap.entrySet()) {
                 writer.print("p" + function.apply(entry.getKey()) + "[label=\"" + entry.getValue().getRunsCount() + "\"");
-                if (candidates.contains(entry.getValue())) {
-                    writer.print(", fillcolor=red");
-                }
+                //if (candidates.contains(entry.getValue())) {
+                    writer.print(", fillcolor=" + colors[entry.getValue().assignedHub() % colors.length]);
+                //}
                 MapGenerator.GeoPoint geoPoint = geoPoints.stream().filter(g -> g.getPoint().getId().equals(entry.getKey())).findFirst().get();
                 writer.print(", pos=\"" + geoPoint.getX() + ", " + geoPoint.getY() + "!\"");
                 writer.println("]");
@@ -126,7 +150,6 @@ public class RouteBuilderY {
      * Информация об выделенном хабе
      */
     @Data
-    @AllArgsConstructor
     class HubInfo {
         /**
          * Количество рейсов, проходящих через него
@@ -141,6 +164,13 @@ public class RouteBuilderY {
          */
         protected final Set<Ref<? extends Point>> neighbours = new HashSet<>();
 
+        protected int[] distances;
+
+        public HubInfo(int runsCount, Ref<? extends Point> model) {
+            this.runsCount = runsCount;
+            this.model = model;
+        }
+
         public boolean isLocalMax(Map<Ref<? extends Point>, HubInfo> mapOfApproachability) {
             for (Ref<? extends Point> ref : neighbours) {
                 if (mapOfApproachability.get(ref).getRunsCount() > this.getRunsCount()) {
@@ -148,6 +178,18 @@ public class RouteBuilderY {
                 }
             }
             return true;
+        }
+
+        public int assignedHub() {
+            int hubId = 0;
+            int value = distances[0];
+            for (int i = 1; i < distances.length; ++i) {
+                if (distances[i] < value) {
+                    value = distances[i];
+                    hubId = i;
+                }
+            }
+            return hubId;
         }
     }
 }

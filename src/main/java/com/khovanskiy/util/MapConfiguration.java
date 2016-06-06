@@ -35,7 +35,7 @@ public class MapConfiguration {
     /**
      * Количество точек (станции, аэропорты и т.д.)
      */
-    private int pointsCount = 250;
+    private int pointsCount = 5;
     /**
      * Количество хабов
      */
@@ -51,11 +51,11 @@ public class MapConfiguration {
     /**
      * Количество поездов
      */
-    private int maxTrainsCount = 70;
+    private int maxTrainsCount = 15;
     /**
      * Количество уникальных маршрутов
      */
-    private int maxRunsCount = 70;
+    private int maxRunsCount = 15;
     /**
      * Разброс количества точек, через которые проходит маршрут
      */

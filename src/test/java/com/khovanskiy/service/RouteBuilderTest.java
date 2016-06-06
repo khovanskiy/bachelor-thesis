@@ -50,7 +50,7 @@ public class RouteBuilderTest {
     /**
      * Количество запросов (удачных)
      */
-    public static final int QUERIES_COUNT = 0;
+    public static final int QUERIES_COUNT = 100;
     /**
      * Seed графа для одинакового построения
      */
@@ -75,7 +75,7 @@ public class RouteBuilderTest {
     /**
      * Текущие права
      */
-    public static final int CURRENT_MODE = VISUALIZE_MODEL;
+    public static final int CURRENT_MODE = VISUALIZE_MODEL | BUILDER_FETCH;
     @Test
     public void main() {
         MapConfiguration configuration = MapConfiguration.getDefaultConfiguration();
@@ -84,8 +84,8 @@ public class RouteBuilderTest {
         GeneratedMap map = generator.generate();
 
         if ((CURRENT_MODE & VISUALIZE_MODEL) == VISUALIZE_MODEL) {
-            RouteBuilderY routeBuilderY = new RouteBuilderY(repository);
-            routeBuilderY.allocateHubs(map.getStations());
+            //RouteBuilderY routeBuilderY = new RouteBuilderY(repository);
+            //routeBuilderY.allocateHubs(map.getStations());
             Visualizer.visualize(repository, "/tmp/model.dot");
         }
 
@@ -94,7 +94,7 @@ public class RouteBuilderTest {
 
             List<RouteBuilderQuery> queries = new ArrayList<>();
             if ((CURRENT_MODE & BUILDER_FETCH) == BUILDER_FETCH) {
-                queries.add(manualQuery(configuration, new StationPoint.Id("4"), new StationPoint.Id("3"), 5));
+                //queries.add(manualQuery(configuration, new StationPoint.Id("4"), new StationPoint.Id("3"), 5));
 
                 for (int i = 0; i < QUERIES_COUNT; ++i) {
                     RouteBuilderQuery query = generateQuery(configuration, map.getStations());
